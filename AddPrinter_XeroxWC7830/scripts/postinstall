@@ -1,0 +1,34 @@
+#!/usr/bin/python
+import subprocess
+import sys
+
+# Populate these options if you want to set specific options for the printer. E.g. duplexing installed, etc.
+printerOptions = { "Duplex":"DuplexNoTumble", "XRTrays":"FiveTrays", "XRFinisher":"OCT", "XRJobStorage":"True", "XRJobType":"Normal", "InputSlot":"Tray1", "Collate":"True",  }
+
+cmd = [ '/usr/sbin/lpadmin', '-x', 'XeroxWC7830' ]
+proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(lpadminxOut, lpadminxErr) = proc.communicate()
+
+# Install the printer
+cmd = [ '/usr/sbin/lpadmin',
+        '-p', 'XeroxWC7830',
+        '-L', 'Main Office',
+        '-D', 'Xerox WC 7830',
+        '-v', 'lpd://192.168.181.150',
+        '-P', "/Library/Printers/PPDs/Contents/Resources/Xerox WorkCentre 7830.gz",
+        '-E',
+        '-o', 'printer-is-shared=false',
+        '-o', 'printer-error-policy=abort-job' ]
+
+for option in printerOptions.keys():
+    cmd.append("-o")
+    cmd.append(str(option) + "=" +  str(printerOptions[option]))
+
+proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(lpadminOut, lpadminErr) = proc.communicate()
+
+if lpadminErr:
+    print "Error: %s" % lpadminErr
+    sys.exit(1)
+print "Results: %s" % lpadminOut    
+sys.exit(0)

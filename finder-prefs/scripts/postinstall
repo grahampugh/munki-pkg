@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Show filename extensions
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+# Show Mounted Servers on Desktop
+defaults write "/System/Library/User Template/English.lproj/Library/Preferences/com.apple.finder.plist" ShowMountedServersOnDesktop -bool YES
+
+# Show Hard Drives on Desktop
+defaults write "/System/Library/User Template/English.lproj/Library/Preferences/com.apple.finder.plist" ShowHardDrivesOnDesktop -bool YES
+
+# Show Removable Media on Desktop
+defaults write "/System/Library/User Template/English.lproj/Library/Preferences/com.apple.finder.plist" ShowRemovableMediaonDesktop -bool YES
+
+# Show External Hard Drives on Desktop
+defaults write "/System/Library/User Template/English.lproj/Library/Preferences/com.apple.finder.plist" ShowExternalHardDrivesOnDesktop -bool YES
+
+# Show Finder Status Bar
+defaults write "/System/Library/User Template/English.lproj/Library/Preferences/com.apple.finder.plist" ShowStatusBar -bool YES
+
+# Show Library Folder
+chflags nohidden ~/Library/
+

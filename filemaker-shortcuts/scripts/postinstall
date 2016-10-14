@@ -1,0 +1,7 @@
+#!/bin/bash
+
+mkdir -p /tmp/Install
+mount_smbfs //ecos:ecos23@192.168.181.252/Install /tmp/Install
+cp -r /tmp/Install/ecos/Programme/DB_open_Files /Users/Shared/
+umount /tmp/Install
+rm -rf /tmp/Install

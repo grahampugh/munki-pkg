@@ -1,0 +1,7 @@
+.	40755	0/0
+./Library	40755	0/0
+./Library/Printers	40755	0/0
+./Library/Printers/PPDs	40755	0/0
+./Library/Printers/PPDs/Contents	40755	0/0
+./Library/Printers/PPDs/Contents/Resources	40755	0/0
+./Library/Printers/PPDs/Contents/Resources/Xerox Phaser 8860.gz	100644	0/0	198741	2093287456

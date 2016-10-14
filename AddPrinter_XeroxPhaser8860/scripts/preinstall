@@ -1,0 +1,49 @@
+#!/usr/bin/python
+import subprocess
+import sys
+import shlex
+
+printerOptions = { "OutputMode":"Enhanced", "Duplex":"DuplexNoTumble", "XRXColor":"Automatic", "XRXGrayline":"Composite", "XRXMismatch":"Scale", "XRXJobType":"Normal",  }
+
+cmd = ['/usr/bin/lpoptions', '-p', 'XeroxPhaser8860', '-l']
+proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(lpoptLongOut, lpoptErr) = proc.communicate()
+
+# lpoptions -p printername -l will still exit 0 even if printername does not exist
+# but it will print to stderr
+if lpoptErr:
+    print lpoptErr
+    sys.exit(0)
+
+cmd = ['/usr/bin/lpoptions', '-p', 'XeroxPhaser8860']
+proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(lpoptOut, lpoptErr) = proc.communicate()
+
+#Note: lpoptions -p printername will never fail. If XeroxPhaser8860 does not exist, it 
+#will still exit 0, but just produce no output.  
+#Thanks, cups, I was having a good day until now.
+
+for option in lpoptLongOut.splitlines():
+    for myOption in printerOptions.keys():
+        optionName = option.split("/", 1)[0]
+        optionValues = option.split("/",1)[1].split(":")[1].strip().split(" ")
+        for opt in optionValues:
+            if "*" in opt:
+                actualOptionValue = opt.replace('*', '')
+                break
+        if optionName == myOption:
+            if not printerOptions[myOption].lower() == actualOptionValue.lower():
+                print "Found mismatch: %s is '%s', should be '%s'" % (myOption, printerOptions[myOption], actualOptionValue)
+                sys.exit(0)
+
+optionDict = dict()                
+for builtOption in shlex.split(lpoptOut):
+    optionDict[builtOption.split("=")[0]] = builtOption.split("=")[1]
+    
+comparisonDict = { "device-uri":"lpd://192.168.181.154", "printer-info":"Xerox Phaser 8860", "printer-location":"Eco Office", "printer-make-and-model":"Xerox Phaser 8860" }
+for keyName in comparisonDict.keys():
+    if not comparisonDict[keyName] == optionDict[keyName]:
+        print "Settings mismatch: %s is '%s', should be '%s'" % (keyName, optionDict[keyName], comparisonDict[keyName])
+        sys.exit(0)
+
+sys.exit(1)
